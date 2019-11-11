@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Snake</title>
+	<style type="text/css">
+		.field{
+			border:dotted 3px #cccccc;
+			width: 400px;
+			line-height: 0;
+		}
+		.exel{
+			width: 20px;
+			height: 20px;
+			box-sizing: border-box;
+			border: solid 1px #000;
+			display: inline-block;
+		}
+		.exel.snake{
+			background-color: #0F0;
+		}
+
+	</style>
+</head>
+<body>
+	<div class="field"></div>
+
+</body>
+<script type="text/javascript">
+	const EMPTY = 0
+	const TAIL  = 1
+	const HEAD  = 2
+	const MOUSE = 3
+	const WALL  = 4
+
+	class Exel{
+		constructor(x,y){
+			this.element = document.createElement("div")
+			this.element.className = "exel"
+			this.x = x;
+			this.y = y;
+			this._state = EMPTY;
+			this.modX = 1
+			this.modY = 0
+		}
+		set state(state){			
+			this._state = state;
+			switch(state){
+				case EMPTY: break;
+				case TAIL: this.element.classList.add("snake");break;
+				case HEAD: this.element.classList.add("snake"); break;
+				case MOUSE: break;
+				case WALL: break;
+			}
+
+		}
+	}
+
+	class Snake{
+		constructor(len){
+			this.x = getRandomArbitrary(len,19)
+			this.y = getRandomArbitrary(0,19)
+			this.len = len;
+			this.moduleX = 1;
+			this.moduleY = 0;
+			Exel.matrix[this.y][this.x].state = HEAD
+			let ceils = 0
+			while(len - 1){
+				len --;
+				ceils ++
+				let x = this.x - ceils
+				Exel.matrix[this.y][x].state = TAIL
+			}
+		}
+
+		step(){
+			this.x += this.moduleX;
+			if(this.x > 19) this.x = 0
+			if(this.x < 0 ) this.x = 19
+			this.y += this.moduleY;
+			if(this.y > 19) this.y = 0
+			if(this.y < 0 ) this.y = 19
+
+		console.log(this.x,this.y);
+		}
+	}
+
+
+	Exel.matrix = []
+	Exel.createField = function createField(width,height,el){
+		let count = width * height
+		for (var i = 0; i < count; i++) {
+			let x = i % width
+			let y = parseInt(i/width)
+			let exel = new Exel(x,y)
+			el.appendChild(exel.element)
+			if(!Exel.matrix[y])Exel.matrix[y] = [];
+			Exel.matrix[y][x] = exel;
+		}
+	}
+	function getRandomArbitrary(min, max) {
+  		return Math.round(Math.random() * (max - min) + min);
+	}
+
+	Exel.createField(20,20,document.querySelector(".field"))
+	snake = new Snake(3)
+</script>
+</html>
