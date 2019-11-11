@@ -45,7 +45,7 @@
 		set state(state){			
 			this._state = state;
 			switch(state){
-				case EMPTY: break;
+				case EMPTY: this.element.classList.remove("snake"); break;
 				case TAIL: this.element.classList.add("snake");break;
 				case HEAD: this.element.classList.add("snake"); break;
 				case MOUSE: break;
@@ -60,27 +60,45 @@
 			this.x = getRandomArbitrary(len,19)
 			this.y = getRandomArbitrary(0,19)
 			this.len = len;
-			this.moduleX = 1;
-			this.moduleY = 0;
-			Exel.matrix[this.y][this.x].state = HEAD
+			this.modX = 1;
+			this.modY = 0;
+			this.elements = []
 			let ceils = 0
-			while(len - 1){
+			while(len){
 				len --;
-				ceils ++
 				let x = this.x - ceils
-				Exel.matrix[this.y][x].state = TAIL
+				this.elements.push(Exel.matrix[this.y][x])
+				this.elements[ceils].state = TAIL
+				ceils ++
 			}
+			this.elements[0].state = HEAD
 		}
 
 		step(){
-			this.x += this.moduleX;
+			if(this.elements[0].modX !== this.modX)
+			if(this.elements[0].mody !== this.mody)
+			this.x += this.modX;
 			if(this.x > 19) this.x = 0
 			if(this.x < 0 ) this.x = 19
-			this.y += this.moduleY;
+			this.y += this.modY;
 			if(this.y > 19) this.y = 0
 			if(this.y < 0 ) this.y = 19
+			for (var i = 0; i < this.elements.length; i++) {
+				if(this.elements[i].modX !== this.modX) this.modX = this.elements[i].modX
+				if(this.elements[i].modY !== this.modY) this.mody = this.elements[i].modY
+				let x = this.elements[i].x + this.modX
+				if(x > 19) x = 0
+				if(x < 0 ) x = 19
 
-		console.log(this.x,this.y);
+				let y = this.elements[i].y + this.modY
+				if(y > 19) y = 0
+				if(y < 0 ) y = 19
+
+				this.elements[i].state = EMPTY
+				this.elements[i] = Exel.matrix[y][x]
+				this.elements[i].state = i ===0? HEAD: TAIL; 
+			}
+
 		}
 	}
 
