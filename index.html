@@ -23,6 +23,7 @@
 </head>
 <body>
 	<div class="field"></div>
+	<button>Start / Pause</button>
 
 </body>
 <script type="text/javascript">
@@ -79,7 +80,6 @@
 			for (var i = 0; i < this.elements.length; i++) {
 
 				if(this.elements[i].turn === 1){
-					console.log(this.elements[i].modX,this.elements[i].modY," pre")
 					if(this.elements[i].modX === 1 && this.elements[i].modY === 0){
 						this.elements[i].modX = 0
 						this.elements[i].modY = 1
@@ -99,7 +99,6 @@
 						this.elements[i].modY = 0
 
 					}
-					console.log(this.elements[i].modX,this.elements[i].modY," post")
 
 				}
 				if(this.elements[i].turn === -1){
@@ -133,7 +132,8 @@
 					this.y += this.elements[i].modY;
 					if(this.y > 19) this.y = 0
 					if(this.y < 0 ) this.y = 19
-					this.colisionTest(this.x,this.y)	
+					this.colisionTest(this.x,this.y)
+					this.onStep(this.x,this.y)
 				}
 
 				let x = this.elements[i].x + modX
@@ -153,16 +153,29 @@
 			}
 		}
 
+		push(){
+			this.x += this.elements[0].modX;
+			if(this.x > 19) this.x = 0
+			if(this.x < 0 ) this.x = 19
+			this.y += this.elements[0].modY;
+			if(this.y > 19) this.y = 0
+			if(this.y < 0 ) this.y = 19
+			this.colisionTest(this.x,this.y)
+			this.elements.unshift(Exel.matrix[this.y][this.x])
+			this.elements[0].state = HEAD;
+			this.onStep(this.x,this.y)
+		}
 		colisionTest(x,y){
 			for (var i = 0; i < this.elements.length; i++) {
-				if(this.elements[i].x === x && this.elements[i].y === y) debugger;
+				if(this.elements[i].x === x && this.elements[i].y === y) this.onAutoCollesion();
 			}
 		}
 	}
 
 
-	Exel.matrix = []
 	Exel.createField = function createField(width,height,el){
+		Exel.matrix = []
+		el.innerHTML = ""
 		let count = width * height
 		for (var i = 0; i < count; i++) {
 			let x = i % width
@@ -174,18 +187,59 @@
 		}
 	}
 
-	var int = setInterval(()=>snake.step(),1000)
-	document.addEventListener("keydown",(e)=>{
-		if(e.keyCode === 37) snake.elements[0].turn = -1
-		if(e.keyCode === 39) snake.elements[0].turn = 1
-	})
+	class Mouse {
+		// Создание мыши в случайной точке, кроме списка запрещенных точек. 
+		constructor(blackList){
 
+		}
+	}
+
+
+	var game = {
+		start(interval) {
+			this.interval = interval? interval: 1000; 
+			Exel.createField(20,20,document.querySelector(".field"))
+			this.snake = new Snake(3);
+			
+			this.snake.onAutoCollesion = this.restart.bind(this)
+			this.snake.onStep = this.stepTest.bind(this)
+
+			createMap();
+
+			this.int = setInterval(()=>this.snake.step(),this.interval)
+			document.addEventListener("keydown",(e)=>{
+				if(e.keyCode === 37) this.snake.elements[0].turn = -1
+				if(e.keyCode === 39) this.snake.elements[0].turn = 1
+			})
+		},
+		stop(){
+			clearInterval(this.int)
+		},
+		rePause(){
+			this.int = setInterval(()=>this.snake.step(),this.interval)
+		},
+		restart(){
+			this.stop();
+			alert("You are lost!")
+			setTimeout(()=>this.start(),2000)
+			
+		},
+		/**
+		* Проверка шага по карте Решения - snake.push + this.updateMap / this.restart
+		*/
+		stepTest(x,y){
+			//
+		},
+		createMap(){
+
+			this.updateMap()	
+		},
+		updateMap(){}
+	}
 
 	function getRandomArbitrary(min, max) {
   		return Math.round(Math.random() * (max - min) + min);
 	}
 
-	Exel.createField(20,20,document.querySelector(".field"))
-	snake = new Snake(9)
 </script>
 </html>
