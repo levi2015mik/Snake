@@ -79,6 +79,7 @@
 			for (var i = 0; i < this.elements.length; i++) {
 
 				if(this.elements[i].turn === 1){
+					console.log(this.elements[i].modX,this.elements[i].modY," pre")
 					if(this.elements[i].modX === 1 && this.elements[i].modY === 0){
 						this.elements[i].modX = 0
 						this.elements[i].modY = 1
@@ -94,10 +95,12 @@
 
 					} else
 					if(this.elements[i].modX === 0 && this.elements[i].modY === -1){
-						this.elements[i].modX = 0
-						this.elements[i].modY = 1
+						this.elements[i].modX = 1
+						this.elements[i].modY = 0
 
 					}
+					console.log(this.elements[i].modX,this.elements[i].modY," post")
+
 				}
 				if(this.elements[i].turn === -1){
 					if(this.elements[i].modX === 1 && this.elements[i].modY === 0){
@@ -152,7 +155,7 @@
 
 		colisionTest(x,y){
 			for (var i = 0; i < this.elements.length; i++) {
-				if(this.elements[i].x === x && this.elements[i].y === y) alert(0)
+				if(this.elements[i].x === x && this.elements[i].y === y) debugger;
 			}
 		}
 	}
