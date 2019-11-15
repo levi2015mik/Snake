@@ -16,14 +16,18 @@
 			display: inline-block;
 		}
 		.exel.snake{
-			background-color: #0F0;
+			background-color: green;
+		}
+
+		.exel.mouse{
+			background-color: gray;
 		}
 
 	</style>
 </head>
 <body>
 	<div class="field"></div>
-	<button>Start / Pause</button>
+	<button class="gameBtn">Start / Pause</button><span class="gameGoal"></span>
 
 </body>
 <script type="text/javascript">
@@ -47,13 +51,16 @@
 		set state(state){			
 			this._state = state;
 			switch(state){
-				case EMPTY: this.element.classList.remove("snake"); break;
+				case EMPTY: this.element.classList.remove("snake","mouse"); break;
 				case TAIL: this.element.classList.add("snake");break;
 				case HEAD: this.element.classList.add("snake"); break;
-				case MOUSE: break;
+				case MOUSE:this.element.classList.add("mouse"); break;
 				case WALL: break;
-			}
+			}	
+		}
 
+		get state(){
+			return this._state
 		}
 	}
 
@@ -133,7 +140,7 @@
 					if(this.y > 19) this.y = 0
 					if(this.y < 0 ) this.y = 19
 					this.colisionTest(this.x,this.y)
-					this.onStep(this.x,this.y)
+					//this.onStep(this.x,this.y)
 				}
 
 				let x = this.elements[i].x + modX
@@ -151,9 +158,11 @@
 				this.elements[i].modY = modY;
 				this.elements[i].state = i === 0? HEAD: TAIL; 
 			}
+			this.onStep(this.x,this.y)
 		}
 
 		push(){
+			debugger;
 			this.x += this.elements[0].modX;
 			if(this.x > 19) this.x = 0
 			if(this.x < 0 ) this.x = 19
@@ -163,7 +172,8 @@
 			this.colisionTest(this.x,this.y)
 			this.elements.unshift(Exel.matrix[this.y][this.x])
 			this.elements[0].state = HEAD;
-			this.onStep(this.x,this.y)
+			
+			//this.onStep(this.x,this.y)
 		}
 		colisionTest(x,y){
 			for (var i = 0; i < this.elements.length; i++) {
@@ -189,57 +199,97 @@
 
 	class Mouse {
 		// Создание мыши в случайной точке, кроме списка запрещенных точек. 
-		constructor(blackList){
+		constructor(map,matrix){
+			let x,y=0
+			while(!map[y][x]){
+				x = getRandomArbitrary(0,map[y].length);
+				y = getRandomArbitrary(0,map.length)
+			}
+			this.matrix = matrix
+			this.matrix[y][x].state = MOUSE;
+			this.x = x
+			this.y = y
+		}
 
+		del(){
+			this.matrix[this.y][this.x].state = EMPTY;
 		}
 	}
 
 
-	var game = {
+	class Game {
+		constructor(){}
 		start(interval) {
-			this.interval = interval? interval: 1000; 
+			this.interval = interval? interval: 500; 
 			Exel.createField(20,20,document.querySelector(".field"))
 			this.snake = new Snake(3);
 			
 			this.snake.onAutoCollesion = this.restart.bind(this)
 			this.snake.onStep = this.stepTest.bind(this)
 
-			createMap();
+			this.createMap();
 
 			this.int = setInterval(()=>this.snake.step(),this.interval)
 			document.addEventListener("keydown",(e)=>{
 				if(e.keyCode === 37) this.snake.elements[0].turn = -1
 				if(e.keyCode === 39) this.snake.elements[0].turn = 1
 			})
-		},
+		}
 		stop(){
 			clearInterval(this.int)
-		},
+		}
 		rePause(){
 			this.int = setInterval(()=>this.snake.step(),this.interval)
-		},
+		}
 		restart(){
 			this.stop();
 			alert("You are lost!")
+			this.goal = 0;
 			setTimeout(()=>this.start(),2000)
 			
-		},
+		}
 		/**
 		* Проверка шага по карте Решения - snake.push + this.updateMap / this.restart
 		*/
 		stepTest(x,y){
-			//
-		},
+			if(x === this.mouse.x && y === this.mouse.y){
+				this.snake.push()
+				this.updateMap()
+				this.goal = this.goal +1
+			}
+		}
+
+		set goal(goal){
+			this._goal = goal;
+			document.querySelector(".gameGoal").innerHTML = this.goal;
+		}
+		get goal(){
+			return this._goal | 0;
+		} 
 		createMap(){
 
 			this.updateMap()	
-		},
-		updateMap(){}
+		}
+		updateMap(){
+			if(this.mouse) this.mouse.del()
+			this.mouse = new Mouse(mapField(Exel.matrix),Exel.matrix)
+		}
 	}
 
 	function getRandomArbitrary(min, max) {
   		return Math.round(Math.random() * (max - min) + min);
 	}
+
+	function mapField(field) {
+		let out = [];
+		for (var i = 0; i < field.length; i++) {
+			out[i] = field[i].map(el=>el.state === EMPTY)
+		}
+		return out
+	}
+
+	var game = new Game()
+	game.start()
 
 </script>
 </html>
