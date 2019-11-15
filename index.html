@@ -65,13 +65,17 @@
 	}
 
 	class Snake{
-		constructor(len){
-			this.x = getRandomArbitrary(len,19)
-			this.y = getRandomArbitrary(0,19)
+		constructor(len,width,height){
+			this.x = getRandomArbitrary(len,width - 1)
+			this.y = getRandomArbitrary(0,height - 1)
 			this.len = len;
 			this.modX = 1;
 			this.modY = 0;
 			this.elements = []
+
+			this.width = width
+			this.height = height
+
 			let ceils = 0
 			while(len){
 				len --;
@@ -134,22 +138,22 @@
 
 				if(i === 0){
 					this.x += this.elements[i].modX;
-					if(this.x > 19) this.x = 0
-					if(this.x < 0 ) this.x = 19
+					if(this.x > this.width - 1) this.x = 0
+					if(this.x < 0 ) this.x = this.width - 1
 					this.y += this.elements[i].modY;
-					if(this.y > 19) this.y = 0
-					if(this.y < 0 ) this.y = 19
+					if(this.y > this.height - 1) this.y = 0
+					if(this.y < 0 ) this.y = this.height - 1
 					this.colisionTest(this.x,this.y)
 					//this.onStep(this.x,this.y)
 				}
 
 				let x = this.elements[i].x + modX
-				if(x > 19) x = 0
-				if(x < 0 ) x = 19
+				if(x > this.width - 1) x = 0
+				if(x < 0 ) x = this.width - 1
 
 				let y = this.elements[i].y + modY
-				if(y > 19) y = 0
-				if(y < 0 ) y = 19
+				if(y > this.height - 1) y = 0
+				if(y < 0 ) y = this.height - 1
 
 				this.elements[i].state = EMPTY
 				if(i === this.elements.length -1) this.elements[i].turn = 0;
@@ -162,16 +166,21 @@
 		}
 
 		push(){
-			debugger;
+			let turn = this.elements[0].turn
+			let modX = this.elements[0].modX
+			let modY = this.elements[0].modY
 			this.x += this.elements[0].modX;
-			if(this.x > 19) this.x = 0
-			if(this.x < 0 ) this.x = 19
+			if(this.x > this.width - 1) this.x = 0
+			if(this.x < 0 ) this.x = this.width - 1
 			this.y += this.elements[0].modY;
-			if(this.y > 19) this.y = 0
-			if(this.y < 0 ) this.y = 19
+			if(this.y > this.height - 1) this.y = 0
+			if(this.y < 0 ) this.y = this.height - 1
 			this.colisionTest(this.x,this.y)
 			this.elements.unshift(Exel.matrix[this.y][this.x])
 			this.elements[0].state = HEAD;
+			this.elements[0].turn = turn;
+			this.elements[0].modX = modX;
+			this.elements[0].modY = modY;
 			
 			//this.onStep(this.x,this.y)
 		}
@@ -218,11 +227,16 @@
 
 
 	class Game {
-		constructor(){}
-		start(interval) {
-			this.interval = interval? interval: 500; 
-			Exel.createField(20,20,document.querySelector(".field"))
-			this.snake = new Snake(3);
+		constructor(width,height,interval,map){
+			this.map    = map
+			this.width  = width
+			this.height = height
+			this.interval = interval | 500
+			this.isStart = false;
+		}
+		start() {
+			Exel.createField(this.width,this.height,document.querySelector(".field"))
+			this.snake = new Snake(3,this.width,this.height);
 			
 			this.snake.onAutoCollesion = this.restart.bind(this)
 			this.snake.onStep = this.stepTest.bind(this)
@@ -230,15 +244,20 @@
 			this.createMap();
 
 			this.int = setInterval(()=>this.snake.step(),this.interval)
+			
 			document.addEventListener("keydown",(e)=>{
 				if(e.keyCode === 37) this.snake.elements[0].turn = -1
 				if(e.keyCode === 39) this.snake.elements[0].turn = 1
 			})
+
+			this.isStart = true;
 		}
 		stop(){
+			this.isStart = false
 			clearInterval(this.int)
 		}
 		rePause(){
+			this.isStart = true;
 			this.int = setInterval(()=>this.snake.step(),this.interval)
 		}
 		restart(){
@@ -288,8 +307,13 @@
 		return out
 	}
 
-	var game = new Game()
+	var game = new Game(20,25,200)
 	game.start()
+
+	document.querySelector('.gameBtn').onclick = function() {
+		if(game.isStart) game.stop()
+		else game.rePause()
+	}
 
 </script>
 </html>
