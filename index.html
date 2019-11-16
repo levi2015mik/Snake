@@ -3,6 +3,9 @@
 <head>
 	<title>Snake</title>
 	<style type="text/css">
+		.gameWrapper{
+			width: max-content;
+		}
 		.field{
 			border:dotted 3px #cccccc;
 			width: 400px;
@@ -25,22 +28,34 @@
 		.exel.wall{
 			background-color: #000;
 		}
-		.gameBtn, .gameBtn2{
-			margin-top: 0.6em;
-		}
 		.gameGoal{
 			margin-top: 0.6em;
-			padding-left: 1em;
 			font-size: 1.2em;
+		}
+		.turn{
+			/*margin: 0.5em;*/
+			font-size: 3em;
+		}
+		.ruleButtons{
+			margin-top: 0.6px;
+			display: flex;
+			justify-content:space-between;
 		}
 
 	</style>
 </head>
 <body>
+	<div class="gameWrapper">
 	<div class="field"></div>
+	<div class="ruleButtons">
 	<button class="gameBtn">Start/Pause</button>
 	<span class="gameGoal">0</span>
 	<button class="gameBtn2">New game</button>
+	</div>
+	<div class="ruleButtons">
+		<button class="turnLeft turn">&larr;</button><button class="turnRight turn">&rarr;</button>
+	</div>
+</div>
 
 </body>
 <script type="text/javascript">
@@ -226,9 +241,14 @@
 		// Создание мыши в случайной точке, кроме списка запрещенных точек. 
 		constructor(map,matrix){
 			let x,y=0
-			while(!map[y][x]){
-				x = getRandomArbitrary(0,map[y].length);
-				y = getRandomArbitrary(0,map.length)
+			try{
+				while(!map[y][x]){
+					x = getRandomArbitrary(0,map[y].length - 1);
+					y = getRandomArbitrary(0,map.length -1)
+				}
+			}
+			catch(err){
+				debugger;
 			}
 			this.matrix = matrix
 			this.matrix[y][x].state = MOUSE;
@@ -265,6 +285,8 @@
 				if(e.keyCode === 37) this.snake.elements[0].turn = -1
 				if(e.keyCode === 39) this.snake.elements[0].turn = 1
 			})
+			document.querySelector('.turnLeft').onmousedown = ()=> {this.snake.elements[0].turn = -1}
+			document.querySelector('.turnRight').onmousedown = ()=> {this.snake.elements[0].turn = 1}
 
 			this.isStart = true;
 		}
@@ -341,18 +363,23 @@
 	}
 
 	var map = [
-				[1,1,1,1,1,1,1,1,1,1],
-				[0,0,0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0,0,0],
-				[0,0,0,0,0,0,0,0,0,0],
-				[1,1,1,1,1,1,1,1,1,1]
+				[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 			  ]
-	var game = new Game(10,10,200,map)
+	var game = new Game(15,15,200,map)
 	game.start()
 
 	document.querySelector('.gameBtn').onclick = function() {
