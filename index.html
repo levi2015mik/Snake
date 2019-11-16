@@ -12,8 +12,8 @@
 			line-height: 0;
 		}
 		.exel{
-			width: 20px;
-			height: 20px;
+			width: 2em;
+			height: 2em;
 			box-sizing: border-box;
 			border: solid 1px #000;
 			display: inline-block;
@@ -41,7 +41,11 @@
 			display: flex;
 			justify-content:space-between;
 		}
-
+		@media screen and (min-width: 1000px){
+			.mobile{
+				display: none;
+			}
+		}
 	</style>
 </head>
 <body>
@@ -52,7 +56,7 @@
 	<span class="gameGoal">0</span>
 	<button class="gameBtn2">New game</button>
 	</div>
-	<div class="ruleButtons">
+	<div class="ruleButtons mobile">
 		<button class="turnLeft turn">&larr;</button><button class="turnRight turn">&rarr;</button>
 	</div>
 </div>
@@ -221,11 +225,11 @@
 
 
 	Exel.createField = function createField(width,height,el){
-		const EXELSIZE = 20
+		const EXELSIZE = 2
 		Exel.matrix = []
 		el.innerHTML = ""
-		el.style.width = width * EXELSIZE + "px";
-		el.style.height = height * EXELSIZE + "px";
+		el.style.width = width * EXELSIZE + "em";
+		el.style.height = height * EXELSIZE + "em";
 		let count = width * height
 		for (var i = 0; i < count; i++) {
 			let x = i % width
@@ -285,8 +289,8 @@
 				if(e.keyCode === 37) this.snake.elements[0].turn = -1
 				if(e.keyCode === 39) this.snake.elements[0].turn = 1
 			})
-			document.querySelector('.turnLeft').onmousedown = ()=> {this.snake.elements[0].turn = -1}
-			document.querySelector('.turnRight').onmousedown = ()=> {this.snake.elements[0].turn = 1}
+			document.querySelector('.turnLeft').addEventListener("touchstart",()=> {this.snake.elements[0].turn = -1})
+			document.querySelector('.turnRight').addEventListener("touchstart",()=> {this.snake.elements[0].turn = 1})
 
 			this.isStart = true;
 		}
