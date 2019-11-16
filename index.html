@@ -34,10 +34,10 @@
 		}
 		.turn{
 			/*margin: 0.5em;*/
-			font-size: 3em;
+			font-size: 6em;
 		}
 		.ruleButtons{
-			margin-top: 0.6px;
+			margin-top: 1em;
 			display: flex;
 			justify-content:space-between;
 		}
@@ -210,6 +210,7 @@
 			this.colisionTest(this.x,this.y)
 			this.elements.unshift(Exel.matrix[this.y][this.x])
 			this.elements[0].state = HEAD;
+			this.elements[1].state = TAIL;
 			this.elements[0].turn = turn;
 			this.elements[0].modX = modX;
 			this.elements[0].modY = modY;
@@ -245,14 +246,9 @@
 		// Создание мыши в случайной точке, кроме списка запрещенных точек. 
 		constructor(map,matrix){
 			let x,y=0
-			try{
-				while(!map[y][x]){
-					x = getRandomArbitrary(0,map[y].length - 1);
-					y = getRandomArbitrary(0,map.length -1)
-				}
-			}
-			catch(err){
-				debugger;
+			while(!map[y][x]){
+				x = getRandomArbitrary(0,map[y].length - 1);
+				y = getRandomArbitrary(0,map.length -1)
 			}
 			this.matrix = matrix
 			this.matrix[y][x].state = MOUSE;
@@ -289,8 +285,8 @@
 				if(e.keyCode === 37) this.snake.elements[0].turn = -1
 				if(e.keyCode === 39) this.snake.elements[0].turn = 1
 			})
-			document.querySelector('.turnLeft').addEventListener("touchstart",()=> {this.snake.elements[0].turn = -1})
-			document.querySelector('.turnRight').addEventListener("touchstart",()=> {this.snake.elements[0].turn = 1})
+			document.querySelector('.turnLeft').addEventListener("touchstart",()=> {this.snake.elements[0].turn = -1},false)
+			document.querySelector('.turnRight').addEventListener("touchstart",()=> {this.snake.elements[0].turn = 1},false)
 
 			this.isStart = true;
 		}
