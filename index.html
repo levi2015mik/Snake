@@ -330,9 +330,16 @@
 		* Проверка шага по карте Решения - snake.push + this.updateMap / this.restart
 		*/
 		stepTest(x,y){
+			if(this.reload === 1){
+				if(!([]).concat(...Exel.matrix).map(el=>el.state).includes(MOUSE)){
+					this.updateMap()
+				}
+			}
+			if(this.reload) this.reload --
 			if(x === this.mouse.x && y === this.mouse.y){
 				this.snake.push()
 				this.updateMap()
+				this.reload = 2
 				this.goal = this.goal +1
 			}
 			if(this.map && this.map[y][x]) this.restart()
@@ -400,7 +407,7 @@
 				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 				[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 			  ]
-	var game = new Game(15,15,200,map)
+	var game = new Game(15,15,150,map)
 	game.start()
 
 	document.querySelector('.gameBtn').onclick = function() {
