@@ -35,16 +35,22 @@
 			background-color: #000;
 		}
 		.gameGoal{
-			margin-top: 0.6em;
-			font-size: 1.2em;
+			font-size: 3em;
+			color: red;
+			font-weight: bold;
+		}
+		.gameBtn, .gameBtn2{
+			margin: 5px 0 5px 0;
+			padding: 0 1.5em 0 1.5em;
+			font-size: 2em; 
 		}
 		.turn{
 			/*margin: 0.5em;*/
 			font-size: 10em;
 			flex-grow: 1;
+			font-weight: bold;
 		}
 		.ruleButtons{
-			margin-top: 1em;
 			display: flex;
 			justify-content:space-between;
 		}
@@ -69,22 +75,25 @@
 		.fieldWrapper{
 			position: relative;
 		}
+
 	</style>
 </head>
 <body>
+
 	<div class="gameWrapper">
+	<div class="ruleButtons">
+		<button class="gameBtn">Start/Pause</button>
+		<span class="gameGoal">0</span>
+		<button class="gameBtn2">New game</button>
+	</div>
+
 	<div class="fieldWrapper">	
 		<div id="msg"><div>You are lost!</div></div>	
 		<div class="field"></div>
 	</div>
-	<div class="ruleButtons">
-	<button class="gameBtn">Start/Pause</button>
-	<span class="gameGoal">0</span>
-	<button class="gameBtn2">New game</button>
-	</div>
 	<div class="ruleButtons mobile">
 		<button class="turnLeft turn">&larr;</button><button class="turnRight turn">&rarr;</button>
-	</div>
+	</div>	
 </div>
 
 </body>
