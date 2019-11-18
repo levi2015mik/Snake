@@ -3,6 +3,10 @@
 <head>
 	<title>Snake</title>
 	<style type="text/css">
+		html, body {
+			margin: 0;
+			padding: 0;
+		}
 		.gameWrapper{
 			width: max-content;
 		}
@@ -21,7 +25,9 @@
 		.exel.snake{
 			background-color: green;
 		}
-
+		.exel.snake.head{
+			background-color: yellowgreen;
+		}
 		.exel.mouse{
 			background-color: gray;
 		}
@@ -90,7 +96,7 @@
 	const WALL  = 4
 
 	class Exel{
-		constructor(x,y){
+		constructor(x,y, size){
 			this.element = document.createElement("div")
 			this.element.className = "exel"
 			this.x = x;
@@ -99,13 +105,17 @@
 			this.turn = 0
 			this.modX = 1
 			this.modY = 0
+			if(size){
+				this.element.style.width = size + "px"
+				this.element.style.height = size + "px"
+			}
 		}
 		set state(state){			
 			this._state = state;
 			switch(state){
-				case EMPTY: this.element.classList.remove("snake","mouse"); break;
+				case EMPTY: this.element.classList.remove("snake","mouse","head"); break;
 				case TAIL: this.element.classList.add("snake");break;
-				case HEAD: this.element.classList.add("snake"); break;
+				case HEAD: this.element.classList.add("head","snake"); break;
 				case MOUSE:this.element.classList.add("mouse"); break;
 				case WALL: this.element.classList.add("wall");break;
 			}	
@@ -246,16 +256,22 @@
 
 
 	Exel.createField = function createField(width,height,el){
-		const EXELSIZE = 2
+		let exelWidth = (window.innerWidth - 25)/width
+		let EXELSIZE;
+		EXELSIZE =  exelWidth;
+		if(window.innerWidth > 1000)
+			EXELSIZE = 30;
+
+
 		Exel.matrix = []
 		el.innerHTML = ""
-		el.style.width = width * EXELSIZE + "em";
-		el.style.height = height * EXELSIZE + "em";
+		el.style.width = width * EXELSIZE + "px";
+		el.style.height = height * EXELSIZE + "px";
 		let count = width * height
 		for (var i = 0; i < count; i++) {
 			let x = i % width
 			let y = parseInt(i/width)
-			let exel = new Exel(x,y)
+			let exel = new Exel(x,y,EXELSIZE)
 			el.appendChild(exel.element)
 			if(!Exel.matrix[y])Exel.matrix[y] = [];
 			Exel.matrix[y][x] = exel;
