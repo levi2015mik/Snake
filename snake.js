@@ -247,8 +247,8 @@
 		restart(noAlert){
 			this.stop();
 			if(!noAlert) document.querySelector('#msg').style.display = "flex"
-			this.goal = 0;
-			setTimeout(()=>this.start(),2000)
+				alert("Your goal was be " + this.goal)
+			setTimeout(()=>{this.goal = 0;this.start()},2000)
 			
 		}
 		/**

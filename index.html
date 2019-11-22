@@ -84,6 +84,11 @@
 			position: relative;
 		}
 
+		a {
+			margin-top: 1em;
+			font-size: 2em;
+			display: inline-block;
+		}
 	</style>
 	<script type="text/javascript" src="snake.js"></script>
 </head>
@@ -105,6 +110,8 @@
 	</div>	
 </div>
 
+<a href="mapcreater.html">Create new map</a>
+
 </body>
 <script type="text/javascript">
 
@@ -125,7 +132,9 @@
 				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 				[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 			  ]
-	var game = new Game(15,15,100,map)
+	var game;
+	if(localStorage["game"])game = new Game( ...JSON.parse(localStorage['game']).data)
+	else game = new Game(15,15,100,map)
 	game.start()
 
 	document.querySelector('.gameBtn').onclick = function() {

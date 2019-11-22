@@ -3,7 +3,31 @@
 <head>
 	<title>Map generator</title>
 	<style type="text/css">
-				.field{
+
+		button {
+			margin-right: 0.5em;
+		}
+		.ruleEl{
+			margin-bottom: 0.3em;
+			margin-left: 0.5em;
+		}
+		@media screen and (max-width: 1000px){
+			h1{font-size: 3.5em;}
+			.ruleEl{ font-size: 3em; }
+			input, button{ font-size: 1em; }
+		}
+
+		input[type=number]{
+			width: 3em
+		}
+
+		a{
+			display: inline-block;
+			margin-top: 1em;
+			font-size: 2em;
+		}
+
+		.field{
 			border:dotted 3px #cccccc;
 			width: 400px;
 			line-height: 0;
@@ -32,12 +56,18 @@
 	<script type="text/javascript" src="snake.js"></script>
 </head>
 <body>
-	<label>Name <input type="text" class="name"></label>
-	<label>Width <input type="number" class="width"></label>
-	<label>Height <input type="number" class="height"></label>
-	<button class="createMap">Create</button>
+	<h1>Create new map</h1>
+	<div class="ruleEl"><label>Name <input type="text" class="name"></label></div>
+	<div class="ruleEl"><label>Width <input type="number" class="width"></label></div>
+	<div class="ruleEl"><label>Height <input type="number" class="height"></label></div>
+	<div class="ruleEl">
+		<button class="createMap">Create</button>
+		<button class="clearMap">Clear</button>
+		<button class="saveMap">save</button>
+	</div>
+
 	<div class="field"></div>
-	<button class="saveMap">save</button>
+	<a href="index.html">Play</a>
 </body>
 <script type="text/javascript">
 	class MapCeil extends Exel{
@@ -82,11 +112,26 @@
 		let height = parseInt(document.querySelector('.height').value)
 		map = createMap(width,height,field);
 	}
+	document.querySelector('.clearMap').onclick = function () {
+		clearMap()
+	}
+
 	document.querySelector('.saveMap').onclick = function() {
-		map = generateBinMap(map);
-		let width  = map[0].length;
-		let height = map.length;
-		let data = [width,height,150,map]
+		let binMap = generateBinMap(map);
+		let width  = binMap[0].length;
+		let height = binMap.length;
+		let data = [width,height,150,binMap]
+		let name = document.querySelector('.name').value
+		let dString = JSON.stringify({name,data});
+		localStorage['game'] = dString;
+	}
+
+	function clearMap() {
+		for (var i = 0; i < map.length; i++) {
+			for (var j = 0; j < map[0].length; j++) {
+				map[i][j].state = 0;
+			}
+		}
 	}
 	function generateBinMap(field) {
 		let out = [];
